@@ -7,8 +7,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -17,6 +21,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import org.slf4j.Logger;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 public class WorldAccessEventHandler {
@@ -81,7 +86,31 @@ public class WorldAccessEventHandler {
 
 
     }
+    @SubscribeEvent
+    public void blockPlacedEvent(BlockEvent.EntityPlaceEvent event){
+        if (event.getEntity() instanceof ServerPlayer == false) return;
 
+
+
+        ServerPlayer player = (ServerPlayer) event.getEntity();
+        BlockPos spawn = player.level.getSharedSpawnPos();
+        BlockPos player_pos = player.getOnPos();
+        // if in safe zone, can place beds
+        if (getDistance(spawn,player_pos)<WorldAccessOptionsHolder.COMMON.SPAWN_ZONE_RADIUS.get()) return;
+
+        Block block = event.getPlacedBlock().getBlock();
+
+
+        if (block instanceof BedBlock && WorldAccessOptionsHolder.COMMON.BEDS_EXPLODE.get()){
+            Explosion.BlockInteraction explosion$blockinteraction = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(player.level, player) ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE;
+            player.level.explode(player, player.getX(), player.getY(), player.getZ(), 3.0F, explosion$blockinteraction);
+        } else {
+            player.level.destroyBlock(event.getPos(),true);
+        }
+            LOGGER.info("Bed placed by player");
+
+
+    }
     private static boolean everyonePresent(PlayerList server_player_list){
         int whitelist_count = 0;
         for (String w : WorldAccessOptionsHolder.COMMON.PLAYER_LIST.get()){

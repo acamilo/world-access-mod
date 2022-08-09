@@ -11,6 +11,8 @@ public class WorldAccessOptionsHolder {
     {
         private static int DEFAULT_SPAWN_ZONE_RADIUS = 500;
         public final ForgeConfigSpec.ConfigValue<Integer> SPAWN_ZONE_RADIUS;
+        private static boolean DEFAULT_BEDS_EXPLODE = true;
+        public final ForgeConfigSpec.ConfigValue<Boolean> BEDS_EXPLODE;
 
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> PLAYER_LIST;
 
@@ -22,8 +24,11 @@ public class WorldAccessOptionsHolder {
                     .worldRestart()
                     .defineInRange("Spawn zone always buildable radius", DEFAULT_SPAWN_ZONE_RADIUS, 1, 10000);
             this.PLAYER_LIST = builder
-                    .comment("A list of Players entries that will not be crafted by the compress key.")
+                    .comment("A list of Players required to be on server to enable building")
                     .defineList("playerList", Arrays.asList("player1","player2"), it -> it instanceof String);
+
+            this.BEDS_EXPLODE = builder.comment("If true, beds explode outside buildable radius")
+                            .worldRestart().define("Beds explode",DEFAULT_BEDS_EXPLODE);
             builder.pop();
         }
     }
