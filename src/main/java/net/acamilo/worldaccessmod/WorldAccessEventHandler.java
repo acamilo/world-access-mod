@@ -86,31 +86,7 @@ public class WorldAccessEventHandler {
 
 
     }
-    @SubscribeEvent
-    public void blockPlacedEvent(BlockEvent.EntityPlaceEvent event){
-        if (event.getEntity() instanceof ServerPlayer == false) return;
 
-
-
-        ServerPlayer player = (ServerPlayer) event.getEntity();
-        BlockPos spawn = player.level.getSharedSpawnPos();
-        BlockPos player_pos = player.getOnPos();
-        // if in safe zone, can place beds
-        if (getDistance(spawn,player_pos)<WorldAccessOptionsHolder.COMMON.SPAWN_ZONE_RADIUS.get()) return;
-
-        Block block = event.getPlacedBlock().getBlock();
-
-
-        if (block instanceof BedBlock && WorldAccessOptionsHolder.COMMON.BEDS_EXPLODE.get()){
-            Explosion.BlockInteraction explosion$blockinteraction = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(player.level, player) ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE;
-            player.level.explode(player, player.getX(), player.getY(), player.getZ(), 3.0F, explosion$blockinteraction);
-        } else {
-            player.level.destroyBlock(event.getPos(),true);
-        }
-            LOGGER.info("Bed placed by player");
-
-
-    }
     private static boolean everyonePresent(PlayerList server_player_list){
         int whitelist_count = 0;
         for (String w : WorldAccessOptionsHolder.COMMON.PLAYER_LIST.get()){
