@@ -91,7 +91,7 @@ public class WorldAccessEventHandler {
         int whitelist_count = 0;
         for (String w : WorldAccessOptionsHolder.COMMON.PLAYER_LIST.get()){
             for (ServerPlayer p : server_player_list.getPlayers()){
-                if (w.equals(p.getName().getString())) whitelist_count++;
+                if (w.equalsIgnoreCase(p.getName().getString())) whitelist_count++;
             }
         }
         if (WorldAccessOptionsHolder.COMMON.PLAYER_LIST.get().size() == whitelist_count)
