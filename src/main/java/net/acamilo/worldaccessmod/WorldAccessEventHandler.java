@@ -73,7 +73,7 @@ public class WorldAccessEventHandler {
         BlockPos spawn = player.level.getSharedSpawnPos();
         BlockPos pos = player.getOnPos();
 
-
+        if (player.isCreative()) return;
 
         // check player distance
         if (getDistance(spawn,pos)>WorldAccessOptionsHolder.COMMON.SPAWN_ZONE_RADIUS.get() && everyonePresent==false){
