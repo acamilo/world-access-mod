@@ -24,7 +24,8 @@ public class WorldAccessOptionsHolder {
                     .defineInRange("Spawn zone always buildable radius", DEFAULT_SPAWN_ZONE_RADIUS, 1, 10000);
             this.PLAYER_LIST = builder
                     .comment("A list of Players required to be on server to enable building")
-                    .defineList("playerList", Arrays.asList("player1","player2"), it -> it instanceof String);
+                    .worldRestart()
+                    .defineList("playerList", Arrays.asList("player1","player2","player3","player4"), it -> it instanceof String);
 
 
             builder.pop();
